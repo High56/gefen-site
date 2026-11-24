@@ -369,7 +369,7 @@ a.card:hover .more-link { gap: 12px; }
 .final .actions { margin: 28px auto 0; max-width: 440px; }
 
 /* footer */
-.site-foot { background: #24331a; color: #c5d3b6; padding-block: 40px 110px; font-size: 15.5px; }
+.site-foot { background: #24331a; color: #c5d3b6; padding-block: 40px 44px; font-size: 15.5px; }
 .site-foot .wrap { display: grid; gap: 22px; }
 .site-foot a { text-decoration: none; }
 .site-foot a:hover { color: #fff; }
