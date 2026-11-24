@@ -401,6 +401,7 @@ a.card:hover .more-link { gap: 12px; }
 
 /* ---------- wider screens ---------- */
 @media (min-width: 560px) {
+  .shelf-strip { width: min(100%, 500px, calc((100svh - 140px) * 9 / 16)); margin-inline: auto; }
   .actions { grid-template-columns: repeat(2, auto); justify-content: start; }
   .final .actions { justify-content: center; max-width: none; }
   .bento { grid-template-columns: repeat(4, 1fr); gap: 12px; }
