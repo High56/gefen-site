@@ -325,8 +325,8 @@ a.card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
   display: flex; justify-content: center; align-items: flex-start;
   padding: clamp(18px, 4.5vh, 48px) 18px 0;
 }
-.tidy-still, .tidy-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-.tidy-still { object-fit: cover; object-position: 50% 40%; }
+.tidy-story .film-still, .tidy-story .film-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tidy-story .film-still { object-fit: cover; object-position: 50% 40%; }
 .tidy-card {
   position: relative; text-align: center; max-width: 640px;
   background: rgba(252, 248, 241, .88);
@@ -339,6 +339,17 @@ a.card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
 }
 .tidy-line span { color: var(--green); display: inline-block; }
 @media (max-width: 520px) { .tidy-card { border-radius: 28px; padding: 14px 22px; } }
+
+/* ---------- opening, long version: a tall strip of shelves that tidies itself as you scroll down it ---------- */
+.shelf-strip {
+  position: relative; width: 100%; aspect-ratio: 9 / 16; border-radius: 28px; overflow: hidden;
+  box-shadow: var(--shadow); background: #dcc6a4;
+}
+.shelf-strip .film-still, .shelf-strip .film-canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+@media (min-width: 980px) {
+  .hero.hero-long .wrap { grid-template-columns: 1fr minmax(360px, 470px); align-items: start; }
+  .hero-long .hero-text { position: sticky; top: 118px; padding-block: 24px; }
+}
 
 /* ---------- wider screens ---------- */
 @media (min-width: 560px) {
