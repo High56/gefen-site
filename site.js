@@ -1,6 +1,7 @@
 /* Gefen website: quote chat window, click-to-play videos, phone menu. */
 (function () {
   'use strict';
+  window.gefenReady = true;   /* tells the page the script loaded; without it nothing stays hidden */
 
   /* 1. "Get a quote" opens Gefen's chat in a window on top of the page.
         Without JavaScript the same link simply opens the chat page. */
@@ -34,17 +35,33 @@
     if (link && openQuote(link)) e.preventDefault();
   });
 
-  /* 2. Videos load from YouTube only when tapped. */
-  document.addEventListener('click', function (e) {
-    var v = e.target.closest && e.target.closest('button.video');
-    if (!v || v.classList.contains('playing')) return;
+  /* 2. Her videos open in a player on top of the page. Nothing loads from YouTube until one is tapped. */
+  var player = null;
+  function openVideo(id, label) {
+    if (!window.HTMLDialogElement) { window.open('https://www.youtube.com/watch?v=' + id, '_blank', 'noopener'); return; }
+    if (!player) {
+      player = document.createElement('dialog');
+      player.className = 'video-dialog';
+      var x = document.createElement('button');
+      x.type = 'button'; x.className = 'x'; x.textContent = '×'; x.setAttribute('aria-label', 'לסגור');
+      x.addEventListener('click', function () { player.close(); });
+      player.appendChild(x);
+      player.addEventListener('click', function (e) { if (e.target === player) player.close(); });
+      player.addEventListener('close', function () { var f = player.querySelector('iframe'); if (f) f.remove(); });
+      document.body.appendChild(player);
+    }
     var frame = document.createElement('iframe');
-    frame.src = 'https://www.youtube-nocookie.com/embed/' + v.getAttribute('data-id') + '?autoplay=1&rel=0&playsinline=1';
-    frame.title = v.getAttribute('aria-label') || 'סרטון';
+    frame.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&playsinline=1';
+    frame.title = label || 'סרטון';
     frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
     frame.allowFullscreen = true;
-    v.classList.add('playing');
-    v.appendChild(frame);
+    player.setAttribute('aria-label', label || 'סרטון');
+    player.appendChild(frame);
+    player.showModal();
+  }
+  document.addEventListener('click', function (e) {
+    var v = e.target.closest && e.target.closest('button.video');
+    if (v) openVideo(v.getAttribute('data-id'), v.getAttribute('aria-label'));
   });
 
   /* 3. The phone menu closes after a choice, on Escape, and on a tap outside. */
@@ -53,6 +70,19 @@
     menu.addEventListener('click', function (e) { if (e.target.closest('a')) menu.open = false; });
     document.addEventListener('click', function (e) { if (menu.open && !menu.contains(e.target)) menu.open = false; });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') menu.open = false; });
+  }
+
+  /* 3b. Sections, photos and cards glide in the first time they scroll into view. */
+  var hidden = document.querySelectorAll('[data-reveal]');
+  if ('IntersectionObserver' in window) {
+    var seen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); seen.unobserve(en.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    Array.prototype.forEach.call(hidden, function (el) { seen.observe(el); });
+  } else {
+    Array.prototype.forEach.call(hidden, function (el) { el.classList.add('in'); });
   }
 
   /* 4. Scroll films: a short film of a room tidying itself, played forward and back by the page scroll.
