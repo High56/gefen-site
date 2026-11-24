@@ -145,6 +145,7 @@ p { text-wrap: pretty; }
 .hero .sub { margin-top: 14px; font-size: clamp(17.5px, 2.2vw, 20px); max-width: 30em; }
 .hero .actions { margin-top: 24px; }
 .hero .micro { margin-top: 14px; font-size: 14.5px; color: var(--muted); }
+.hero-about .actions { margin-top: 26px; }
 .hero .pull {
   margin-top: 22px; font-family: var(--f-display); font-size: clamp(21px, 3vw, 26px); line-height: 1.35;
   color: var(--green); border-inline-start: 3px solid #e7a9bf; padding-inline-start: 16px; max-width: 22em;
@@ -439,7 +440,6 @@ a.card:hover .more-link { gap: 12px; }
   .btn.head-cta { display: inline-flex; order: 2; }
   .hero { padding-block: 60px 72px; }
   .hero-page { padding-block: 72px 56px; }
-  .hero-about .wrap { grid-template-columns: 1.05fr 1fr; gap: 60px; align-items: center; }
   .hero.hero-long .wrap { grid-template-columns: minmax(440px, 540px) 1fr; gap: 52px; align-items: start; }
   .hero-long .actions { grid-template-columns: auto; justify-content: start; }
   .hero-long .actions .btn { min-width: 240px; }
