@@ -55,29 +55,33 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') menu.open = false; });
   }
 
-  /* 4. Opening: a short film of the room tidying itself, played forward and back by scrolling.
-        The film is a row of still frames (img/tidy/f00.jpg ...) drawn on a canvas.
+  /* 4. Opening: a short film of the room tidying itself, tied to the page scroll.
+        The page scrolls normally; the film plays over the first part of that scroll and is
+        fully tidy before the room has left the screen. Frames are img/tidy/f000.webp ...
         To replace the film: export new frames into img/tidy/ and set FRAMES to how many there are. */
   var story = document.querySelector('.tidy-story');
   if (story) {
-    var FRAMES = 48, FOCUS_X = 0.5, FOCUS_Y = 0.4;
-    var stage = story.querySelector('.tidy-stage');
+    var FRAMES = 97;          /* how many frame files there are */
+    var RUN = 0.45;           /* the film finishes after scrolling this share of the room's height */
+    var CATCH_UP = 110;       /* milliseconds the picture takes to catch up with the scroll; smaller = snappier */
+    var FOCUS_X = 0.5, FOCUS_Y = 0.4;
     var canvas = story.querySelector('.tidy-canvas');
-    var one = story.querySelector('.tidy-line.one');
-    var two = story.querySelector('.tidy-line.two');
-    var hint = story.querySelector('.tidy-hint');
     var ctx = canvas.getContext('2d');
-    var frames = [], shown = -1, queued = false;
-    var smooth = function (a, b, x) { x = (x - a) / (b - a); x = x < 0 ? 0 : x > 1 ? 1 : x; return x * x * (3 - 2 * x); };
-    var queue = function () { if (!queued) { queued = true; requestAnimationFrame(draw); } };
-    for (var i = 0; i < FRAMES; i++) {
+    var frames = new Array(FRAMES), cur = 0, drawn = -1, ticking = false, last = 0;
+    var ready = function (im) { return im && im.complete && im.naturalWidth > 0; };
+    var name = function (i) { return 'img/tidy/f' + ('00' + i).slice(-3) + '.webp'; };
+    /* load a rough pass first (every 8th frame), then fill the gaps, so early scrolling always has a picture */
+    var order = [];
+    [8, 4, 2, 1].forEach(function (step) {
+      for (var i = 0; i < FRAMES; i += step) if (order.indexOf(i) < 0) order.push(i);
+    });
+    order.forEach(function (i) {
       var im = new Image();
       im.decoding = 'async';
-      im.onload = queue;
-      im.src = 'img/tidy/f' + (i < 10 ? '0' : '') + i + '.jpg';
-      frames.push(im);
-    }
-    var ready = function (im) { return im && im.complete && im.naturalWidth > 0; };
+      im.onload = function () { drawn = -1; kick(); };
+      im.src = name(i);
+      frames[i] = im;
+    });
     var nearest = function (want) {
       for (var d = 0; d < FRAMES; d++) {
         if (ready(frames[want - d])) return want - d;
@@ -87,32 +91,47 @@
     };
     var fit = function () {
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      var w = Math.round(stage.clientWidth * dpr), h = Math.round(stage.clientHeight * dpr);
-      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; shown = -1; }
+      var w = Math.round(story.clientWidth * dpr), h = Math.round(story.clientHeight * dpr);
+      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; drawn = -1; }
     };
-    function draw() {
-      queued = false;
+    var paint = function (im, alpha) {
+      var cw = canvas.width, ch = canvas.height;
+      var s = Math.max(cw / im.naturalWidth, ch / im.naturalHeight);
+      var dw = im.naturalWidth * s, dh = im.naturalHeight * s;
+      ctx.globalAlpha = alpha;
+      ctx.drawImage(im, (cw - dw) * FOCUS_X, (ch - dh) * FOCUS_Y, dw, dh);
+    };
+    var target = function () {
+      var h = story.offsetHeight || 1;
+      var p = -story.getBoundingClientRect().top / (h * RUN);
+      return p < 0 ? 0 : p > 1 ? 1 : p;
+    };
+    function step(now) {
+      ticking = false;
       fit();
-      var top = parseFloat(getComputedStyle(stage).top) || 0;
-      var box = story.getBoundingClientRect();
-      var run = box.height - stage.offsetHeight;
-      var p = run > 0 ? Math.min(1, Math.max(0, (top - box.top) / run)) : 1;
-      /* the film runs over the first 85% of the scroll; the tidy room then rests for a moment */
-      var film = Math.min(1, p / 0.85);
-      var n = nearest(Math.round(film * (FRAMES - 1)));
-      if (n >= 0 && n !== shown) {
-        var im = frames[n], cw = canvas.width, ch = canvas.height;
-        var s = Math.max(cw / im.naturalWidth, ch / im.naturalHeight);
-        var dw = im.naturalWidth * s, dh = im.naturalHeight * s;
-        ctx.drawImage(im, (cw - dw) * FOCUS_X, (ch - dh) * FOCUS_Y, dw, dh);
-        shown = n;
+      var want = target();
+      var dt = last ? Math.min(100, now - last) : 16;
+      last = now;
+      cur += (want - cur) * (1 - Math.exp(-dt / CATCH_UP));
+      if (Math.abs(want - cur) < 0.0008) cur = want;
+      var pos = cur * (FRAMES - 1);
+      if (Math.abs(pos - drawn) > 0.01) {
+        var a = Math.floor(pos), mix = pos - a;
+        var ia = nearest(a);
+        if (ia >= 0) {
+          paint(frames[ia], 1);
+          /* blend a little of the next frame in, so the motion glides instead of stepping */
+          if (mix > 0.02 && ia === a && ready(frames[a + 1])) paint(frames[a + 1], mix);
+          ctx.globalAlpha = 1;
+          drawn = pos;
+        }
       }
-      one.style.opacity = 1 - smooth(0.4, 0.52, p);
-      two.style.opacity = smooth(0.5, 0.64, p);
-      hint.style.opacity = 1 - smooth(0, 0.1, p);
+      if (cur !== want) kick(); else last = 0;
     }
-    window.addEventListener('scroll', queue, { passive: true });
-    window.addEventListener('resize', queue);
-    draw();
+    function kick() { if (!ticking) { ticking = true; requestAnimationFrame(step); } }
+    cur = target();
+    window.addEventListener('scroll', kick, { passive: true });
+    window.addEventListener('resize', kick);
+    kick();
   }
 })();
