@@ -322,12 +322,12 @@ a.card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
 .tidy-story { position: relative; height: 340vh; height: 340svh; }
 .tidy-stage {
   position: sticky; top: 66px; height: calc(100vh - 66px); height: calc(100svh - 66px);
-  overflow: hidden; background: #cfdcea;
+  overflow: hidden; background: #e9e2d6;
   display: flex; flex-direction: column; align-items: center; justify-content: space-between;
   padding: clamp(16px, 4vh, 44px) 18px 96px;
 }
 .tidy-still, .tidy-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-.tidy-still { object-fit: cover; object-position: 46% 62%; }
+.tidy-still { object-fit: cover; object-position: 50% 40%; }
 .tidy-card {
   position: relative; text-align: center; max-width: 620px;
   background: rgba(252, 248, 241, .86);

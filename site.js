@@ -60,7 +60,7 @@
         To replace the film: export new frames into img/tidy/ and set FRAMES to how many there are. */
   var story = document.querySelector('.tidy-story');
   if (story) {
-    var FRAMES = 48, FOCUS_X = 0.46, FOCUS_Y = 0.62;
+    var FRAMES = 48, FOCUS_X = 0.5, FOCUS_Y = 0.4;
     var stage = story.querySelector('.tidy-stage');
     var canvas = story.querySelector('.tidy-canvas');
     var one = story.querySelector('.tidy-line.one');
