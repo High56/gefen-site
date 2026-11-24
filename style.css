@@ -160,8 +160,8 @@ p { text-wrap: pretty; }
 
 /* opening: a tall strip of shelves that tidies itself as you scroll down it */
 .shelf-strip {
-  position: relative; aspect-ratio: 9 / 16; border-radius: 30px; overflow: hidden;
-  width: min(100%, calc((100svh - 300px) * 9 / 16)); min-width: 220px; margin-inline: auto;
+  position: relative; aspect-ratio: 9 / 16; border-radius: 26px; overflow: hidden;
+  width: calc(100% + 24px); margin-inline: -12px;
   box-shadow: var(--shadow); background: #dcc6a4;
   animation: rise 1s var(--ease) both;
 }
@@ -402,8 +402,11 @@ a.card:hover .more-link { gap: 12px; }
   .hero { padding-block: 60px 72px; }
   .hero-page { padding-block: 72px 56px; }
   .hero-about .wrap { grid-template-columns: 1.05fr 1fr; gap: 60px; align-items: center; }
-  .hero.hero-long .wrap { grid-template-columns: minmax(340px, 440px) 1fr; gap: 64px; align-items: start; }
-  .shelf-strip { width: 100%; }
+  .hero.hero-long .wrap { grid-template-columns: minmax(440px, 540px) 1fr; gap: 52px; align-items: start; }
+  .hero-long .actions { grid-template-columns: auto; justify-content: start; }
+  .hero-long .actions .btn { min-width: 240px; }
+  .shelf-strip { width: 100%; margin-inline: 0; border-radius: 32px; }
+  .hero-long h1 { font-size: clamp(40px, 4.4vw, 54px); }
   .hero-long .hero-text { position: sticky; top: 130px; padding-block: 30px; }
   .bento { grid-template-columns: repeat(6, 1fr); }
   .bento .shot:nth-child(1), .bento .shot:nth-child(10) { grid-column: span 2; grid-row: span 2; }
