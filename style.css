@@ -189,7 +189,7 @@ p { text-wrap: pretty; }
 .section.alt { background: var(--sand); }
 .section.pink { background: var(--pink); }
 .section.tint { background: var(--green-tint); }
-.section.dark { background: #d6e6bf; color: var(--body); }
+.section.dark { background: #e6f0d8; color: var(--body); }
 .section.dark h2 { color: var(--green-deep); }
 .label {
   display: inline-flex; align-items: center; gap: 10px; margin-bottom: 10px;
@@ -400,7 +400,7 @@ a.card:hover .more-link { gap: 12px; }
 .final .actions { margin: 28px auto 0; max-width: 440px; }
 
 /* footer */
-.site-foot { background: #e4efd3; color: var(--body); border-top: 1px solid #c9dbb0; padding-block: 40px 44px; font-size: 15.5px; }
+.site-foot { background: #f0f5e8; color: var(--body); border-top: 1px solid #d7e4c4; padding-block: 40px 44px; font-size: 15.5px; }
 .site-foot .wrap { display: grid; gap: 22px; }
 .site-foot a { text-decoration: none; }
 .site-foot a:hover { color: var(--green); }
@@ -408,7 +408,7 @@ a.card:hover .more-link { gap: 12px; }
 .foot-brand img { width: 54px; height: 54px; border-radius: 16px; }
 .foot-brand b { color: var(--green); font-family: var(--f-display); font-size: 21px; display: block; }
 .foot-links { display: flex; flex-wrap: wrap; gap: 6px 22px; }
-.copy { border-top: 1px solid #c9dbb0; padding-top: 18px; font-size: 13.5px; color: var(--muted); }
+.copy { border-top: 1px solid #d7e4c4; padding-top: 18px; font-size: 13.5px; color: var(--muted); }
 
 /* sticky bar (phones) */
 .sticky {
