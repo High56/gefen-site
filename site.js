@@ -85,6 +85,23 @@
     Array.prototype.forEach.call(hidden, function (el) { el.classList.add('in'); });
   }
 
+  /* 3c. Her short clips play silently while on screen and pause when scrolled away.
+         Visitors who ask for less motion get a still picture with play controls instead. */
+  var clips = document.querySelectorAll('.reel video');
+  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (calm || !('IntersectionObserver' in window)) {
+    Array.prototype.forEach.call(clips, function (v) { v.controls = true; v.preload = 'metadata'; });
+  } else {
+    var watch = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        var v = en.target;
+        if (en.isIntersecting) { v.preload = 'auto'; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+        else v.pause();
+      });
+    }, { threshold: 0.35 });
+    Array.prototype.forEach.call(clips, function (v) { v.muted = true; watch.observe(v); });
+  }
+
   /* 4. Scroll films: a short film of a room tidying itself, played forward and back by the page scroll.
         Any element with data-film="folder/" and data-frames="N" plays the frames folder/f000.webp ... on
         its <canvas>. The page always scrolls normally; nothing is pinned.
