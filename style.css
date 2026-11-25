@@ -400,15 +400,15 @@ a.card:hover .more-link { gap: 12px; }
 .final .actions { margin: 28px auto 0; max-width: 440px; }
 
 /* footer */
-.site-foot { background: #e6f0d8; color: var(--body); border-top: 1px solid #d3e2bd; padding-block: 40px 44px; font-size: 15.5px; }
+.site-foot { background: #c8dbab; color: var(--body); border-top: 0; padding-block: 40px 44px; font-size: 15.5px; }
 .site-foot .wrap { display: grid; gap: 22px; }
 .site-foot a { text-decoration: none; }
 .site-foot a:hover { color: var(--green); }
 .foot-brand { display: flex; gap: 12px; align-items: center; }
 .foot-brand img { width: 54px; height: 54px; border-radius: 16px; }
-.foot-brand b { color: var(--green); font-family: var(--f-display); font-size: 21px; display: block; }
+.foot-brand b { color: var(--green-deep); font-family: var(--f-display); font-size: 21px; display: block; }
 .foot-links { display: flex; flex-wrap: wrap; gap: 6px 22px; }
-.copy { border-top: 1px solid #d7e4c4; padding-top: 18px; font-size: 13.5px; color: var(--muted); }
+.copy { border-top: 1px solid #b2c992; padding-top: 18px; font-size: 13.5px; color: #3f4b3b; }
 
 /* sticky bar (phones) */
 .sticky {
