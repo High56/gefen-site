@@ -86,21 +86,36 @@
   }
 
   /* 3c. Her short clips play silently while on screen and pause when scrolled away.
-         Visitors who ask for less motion get a still picture with play controls instead. */
+         Each has a pause button; a clip someone paused stays paused.
+         Visitors who ask for less motion start with every clip paused. */
   var clips = document.querySelectorAll('.reel video');
   var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (calm || !('IntersectionObserver' in window)) {
-    Array.prototype.forEach.call(clips, function (v) { v.controls = true; v.preload = 'metadata'; });
-  } else {
-    var watch = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        var v = en.target;
-        if (en.isIntersecting) { v.preload = 'auto'; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
-        else v.pause();
-      });
-    }, { threshold: 0.35 });
-    Array.prototype.forEach.call(clips, function (v) { v.muted = true; watch.observe(v); });
-  }
+  var seenClips = ('IntersectionObserver' in window) ? new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      var v = en.target;
+      v.onScreen = en.isIntersecting;
+      if (en.isIntersecting && !v.held) { v.preload = 'auto'; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+      else if (!en.isIntersecting) v.pause();
+    });
+  }, { threshold: 0.35 }) : null;
+  Array.prototype.forEach.call(clips, function (v) {
+    v.muted = true;
+    var btn = v.parentNode.querySelector('.reel-toggle');
+    var show = function () {
+      if (!btn) return;
+      btn.setAttribute('aria-pressed', v.held ? 'true' : 'false');
+      btn.setAttribute('aria-label', v.held ? 'הפעלת הסרטון' : 'עצירת הסרטון');
+    };
+    v.held = calm || !seenClips;
+    if (v.held) v.preload = 'metadata';
+    show();
+    if (btn) btn.addEventListener('click', function () {
+      v.held = !v.held; show();
+      if (v.held) v.pause();
+      else { v.preload = 'auto'; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+    });
+    if (seenClips) seenClips.observe(v);
+  });
 
   /* 4. Scroll films: a short film of a room tidying itself, played forward and back by the page scroll.
         Any element with data-film="folder/" and data-frames="N" plays the frames folder/f000.webp ... on
