@@ -400,7 +400,7 @@ a.card:hover .more-link { gap: 12px; }
 .final .actions { margin: 28px auto 0; max-width: 440px; }
 
 /* footer */
-.site-foot { background: #f0f5e8; color: var(--body); border-top: 1px solid #d7e4c4; padding-block: 40px 44px; font-size: 15.5px; }
+.site-foot { background: #e6f0d8; color: var(--body); border-top: 1px solid #d3e2bd; padding-block: 40px 44px; font-size: 15.5px; }
 .site-foot .wrap { display: grid; gap: 22px; }
 .site-foot a { text-decoration: none; }
 .site-foot a:hover { color: var(--green); }
